@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/app/lib/prisma'
 import * as XLSX from 'xlsx'
 
+// ファイルサイズ制限を50MBに設定
+export const maxDuration = 60
+export const dynamic = 'force-dynamic'
+
 // Parse Japanese date
 function parseJapaneseDate(dateStr: any): Date | null {
     if (!dateStr) return null
