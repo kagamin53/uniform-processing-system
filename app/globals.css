@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+:root {
+  --foreground-rgb: 30, 41, 59;
+  /* Slate-800 */
+  --background-rgb: 248, 250, 252;
+  /* Slate-50 */
+  --primary-rgb: 242, 101, 34;
+  /* #F26522 - Logo Orange */
+  --secondary-rgb: 0, 112, 192;
+  /* #0070C0 - Logo Blue/Navy */
+  --accent-rgb: 15, 23, 42;
+  /* #0f172a - Slate-900 (Text) */
+}
+
+/* Base Styles */
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  font-family: 'Hiragino Kaku Gothic ProN', 'Biz UDPGothic', 'Meiryo', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Component Classes */
+@layer components {
+
+  /* Cards */
+  .glass-card {
+    @apply bg-white border border-gray-200 shadow-sm rounded-lg;
+    /* Deprecated glass, use solid */
+  }
+
+  .b2b-card {
+    @apply bg-white border border-gray-200 shadow-sm rounded-lg overflow-hidden;
+  }
+
+  .b2b-card-header {
+    @apply px-4 py-3 border-b border-gray-200 font-bold text-slate-700 bg-gray-50 flex justify-between items-center;
+  }
+
+  /* Buttons */
+  .glass-button {
+    @apply px-4 py-2 rounded-md font-medium transition-colors bg-white border border-gray-300 text-slate-700 hover:bg-gray-50 hover:text-orange-500 hover:border-orange-500 shadow-sm;
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 rounded-md font-bold text-white transition-colors shadow-sm bg-[#F26522] hover:bg-[#D4551B];
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 rounded-md font-bold text-white transition-colors shadow-sm bg-[#0070C0] hover:bg-[#005a9e];
+  }
+
+  .btn-outline {
+    @apply px-4 py-2 rounded-md font-medium transition-colors bg-transparent border border-gray-300 text-slate-600 hover:bg-gray-50 hover:text-slate-800;
+  }
+
+  /* Tables */
+  .b2b-table {
+    @apply w-full border-collapse text-sm text-left text-slate-700;
+  }
+
+  .b2b-table th {
+    @apply bg-gray-100 text-slate-600 font-bold px-3 py-2 border border-gray-300 whitespace-nowrap;
+  }
+
+  .b2b-table td {
+    @apply border border-gray-300 px-3 py-2 bg-white;
+  }
+
+  .b2b-table tr:hover td {
+    @apply bg-blue-50;
+  }
+
+  /* Inputs */
+  .input-base {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 bg-white shadow-sm transition-all;
+  }
+
+  .label-base {
+    @apply block text-sm font-bold text-slate-700 mb-1 flex items-center gap-2;
+  }
+
+  .required-badge {
+    @apply text-[10px] bg-red-100 text-red-600 px-1 py-0.5 rounded border border-red-200 font-normal ml-1;
+  }
+
+  /* Custom Scrollbar for busy lists */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+
+/* Material Icons Tweaks */
+.material-icons {
+  vertical-align: middle;
+}

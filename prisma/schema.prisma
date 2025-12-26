@@ -1,0 +1,164 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 加工コードマスター (刺繍コード一覧表)
+model ProcessingCode {
+  id              Int      @id @default(autoincrement())
+  code            String   @unique // HA0001, P0001 など
+  type            String   @default("embroidery") // embroidery（刺繍）or transfer（転写）
+  customerCode    String?  // 得意先CD
+  city            String?  // 市・郡
+  customerName    String?  // 得意先名
+  position        String?  // 刺繍位置 (左胸など)
+  productCode     String?  // 商品CD
+  productName     String?  // 商品名
+  modelNumber     String?  // 型式
+  colorCode       String?  // 色CD
+  colorName       String?  // 色名
+  processTime     String?  // 刺繍工程時期
+  costPrice       Int?     // 実費
+  sellingPrice    Int?     // 売値
+  threadColor     String?  // 使用糸
+  baldanTime      String?  // バルダン（分）
+  tajimaTime      String?  // タジマ（分）
+  prepMinutes     Int      @default(15) // 準備時間（分）
+  notes           String?  // 備考
+  createdAt       DateTime @default(now())
+  
+  pickingItems    PickingItem[]
+}
+
+// ピッキング対象一覧 (二次加工ピッキング対象一覧表)
+model PickingItem {
+  id                  Int       @id @default(autoincrement())
+  orderDate           DateTime? // 受注日
+  orderNumber         String?   // 受注№
+  orderLine           Int?      // 受注行
+  pickingNumber       Int?      // ピッキング№
+  customerCode        String?   // 得意先コード
+  customerName        String?   // 得意先名
+  deliveryCode        String?   // 納品先コード
+  deliveryName        String?   // 納品先名
+  shippingDate        DateTime? // 出荷予定日
+  supplierCode        String?   // 仕入先コード
+  supplierName        String?   // 仕入先名
+  productCode         String?   // 商品コード
+  productName         String?   // 商品名
+  colorCode           String?   // 色コード
+  colorName           String?   // 色名
+  size                String?   // サイズ
+  orderQuantity       Int?      // 受注数量
+  normalShipment      String?   // ノーマル品出荷
+  processingTypeCode  String?   // 加工内容コード
+  processingType      String?   // 加工内容
+  materialCode        String?   // 資材商品コード
+  materialName        String?   // 資材商品名
+  positionCode        String?   // 加工位置コード
+  positionName        String?   // 加工位置
+  processorCode       String?   // 加工先コード
+  processorName       String?   // 加工先名
+  remarks1            String?   // 備考① (加工CD)
+  materialUsage       Int?      // 資材使用数
+  
+  // 加工CDとの紐付け
+  processingCodeId    Int?
+  processingCode      ProcessingCode? @relation(fields: [processingCodeId], references: [id])
+  
+  addedToPlan         Boolean   @default(false) // 計画表に追加済みかどうか
+  status              String    @default("pending") // pending, processing, completed, shipped
+  createdAt           DateTime  @default(now())
+}
+
+// 受注一覧表
+model OrderEntry {
+  id              Int       @id @default(autoincrement())
+  receptionDate   DateTime? // 受付
+  completionDate  String?   // 仕上完了日
+  processingCode  String?   // 加工CD
+  customerCode    String?   // 得意先CD
+  city            String?   // 市・郡
+  customerName    String?   // 得意先名
+  position        String?   // 刺繍位置
+  productCode     String?   // 新商品CD
+  productName     String?   // 商品名
+  modelNumber     String?   // 型式
+  colorCode       String?   // 色CD
+  colorName       String?   // 色名
+  colorName2      String?   // 色名2
+  totalQuantity   Int?      // 合計枚数
+  costPrice       Int?      // 実費
+  sellingPrice    Int?      // 売値
+  threadColor     String?   // 使用糸
+  baldanTime      String?   // バルダン（分）
+  tajimaTime      String?   // タジマ（分）
+  status          String    @default("pending") // pending, in_progress, completed
+  createdAt       DateTime  @default(now())
+}
+
+// 計画表
+model PlanningEntry {
+  id                Int       @id @default(autoincrement())
+  orderNumber       String?   // 受注No
+  planDate          DateTime? // 加工予定日
+  receptionDate     DateTime? // 受付
+  returnDate        String?   // 返却予定
+  processingCode    String?   // 加工CD
+  processingType    String    @default("embroidery") // embroidery（刺繍）or transfer（転写）
+  customerCode      String?   // 得意先CD
+  city              String?   // 市・郡
+  gardenName        String?   // 園名
+  position          String?   // 刺繍位置
+  productCode       String?   // 商品CD
+  productName       String?   // 商品名
+  modelNumber       String?   // 型式
+  colorCode         String?   // 色CD
+  colorName         String?   // 色名
+  colorName2        String?   // 色名2
+  // サイズ別枚数
+  size90SS          Int?      // 90/SS
+  size100S          Int?      // 100/S
+  size110M          Int?      // 110/M
+  size120L          Int?      // 120/L
+  size130LL         Int?      // 130/LL
+  sizeF             Int?      // F (フリー)
+  // 靴下用サイズ
+  size1315          Int?      // 13-15
+  size1618          Int?      // 16-18
+  size1921          Int?      // 19-21
+  size2224          Int?      // 22-24
+  sizeOther         Int?      // その他
+  sizeBreakdown     String?   // サイズ内訳 (例: "90:2,100:3,110:1")
+  totalQuantity     Int?      // 合計枚数
+  costPrice         Int?      // 実費
+  sellingPrice      Int?      // 売値
+  threadColor       String?   // 使用糸
+  baldanTime        String?   // バルダン
+  tajimaTime        String?   // タジマ
+  usedMachine       String    @default("tajima") // 使用機 (tajima or baldan)
+  deadline          String?   // 納期
+  plannedSeconds    Int?      // 予定時間(秒)
+  startTime         String?   // 開始時間 (例: "08:30")
+  notes             String?   // 備考
+  adjustMinutes     Int?      // 調整(分)
+  embroideryMinutes Int?      // 刺・転(分)
+  prepMinutes       Int       @default(15) // 準備時間(分)
+  status            String    @default("pending") // pending, in_progress, completed
+  createdAt         DateTime  @default(now())
+}
+
+// 休日カレンダー
+model Holiday {
+  id          Int      @id @default(autoincrement())
+  date        DateTime @unique  // 休日の日付
+  name        String?  // 休日名（例: "年末年始", "お盆"）
+  createdAt   DateTime @default(now())
+}
+
